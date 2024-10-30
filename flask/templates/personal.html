@@ -1,0 +1,162 @@
+<html>
+ <body>
+   <table id="single">
+    <tr>
+     <th>name</th>
+     <td><input type="text" id="name"></td>
+    </tr>
+    <tr>
+     <th>phone</th>
+     <td><input type="text" id="phone"></td>
+    </tr>
+   </table>
+
+   <table id="buttons">
+    <tr>
+     <td><center><button id="create">create</button></center></td>
+     <td><center><button id="insert">insert</button></center></td>
+     <td><center><button id="select">select</button></center></td>
+     <td><center><button id="update">update</button></center></td>
+     <td><center><button id="delete">delete</button></center></td>
+    </tr>
+   </table>
+
+   <table id="multiple">
+    <tr>
+     <th>id</th>
+     <th>name</th>
+     <th>phone</th>
+    </tr>
+   </table>
+
+   <style>
+    #single
+    {
+     width:99%;
+     border-collapse:collapse;
+    }
+
+    #single th,td
+    {
+     width:50%;
+     border:1px solid;
+    }
+
+    #buttons
+    {
+     width:99%;
+     border-collapse:collapse;
+    }
+
+    #buttons td
+    {
+     width:33%;
+     border:1px solid;
+    }
+
+    #personalmultiple
+    {
+     width:99%;
+     border-collapse:collapse;
+    }
+
+    #personalmultiple td
+    {
+     width:14%;
+     border:1px solid;
+    }
+   </style>
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+   <script>
+
+   $("#create").click(function(){
+       alert()
+        $.ajax({
+  		type: "POST",
+  		url: "/createpersonal",
+  		contentType: "application/json",
+  		dataType: 'json',
+  		success: function(result) {
+    		alert(result);
+  		}
+	});
+
+        /* $.post("/addpersonal",{opersonal:personal},function(result){
+		alert(result)
+		getpersonal()
+        }) */
+    })
+
+    $("#insert").click(function(){
+	personal={}
+	personal.name=$("#name").val()
+	personal.phone=$("#phone").val()
+        $.ajax({
+  		type: "POST",
+  		url: "../addpersonal",
+  		data: JSON.stringify(personal),
+  		contentType: "application/json",
+  		dataType: 'json',
+  		success: function(result) {
+    		alert(result);
+  		}
+	});
+    
+        /* $.post("/addpersonal",{opersonal:personal},function(result){
+		alert(result)
+		getpersonal()
+        }) */
+    })
+
+    $("#select").click(function(){
+        getpersonal()
+    })
+
+    function getpersonal()
+    {
+    	$.post("/getpersonalcount",function(data){
+    		$.get("/getpersonal",function(data){
+			s=""
+			for(i=0;i<data.length;i++)
+			{
+				s+="<tr>"
+				s+="<td>data[i].name</td>"
+				s+="<td>data[i].phone</td"
+				s+="</tr>"
+			}
+			$("#multiple").append(s)
+    	})
+    })
+    }
+
+    $("#multiple").on("click","tr",function(){
+	$.get("/getpersonalid",{id:$(this).find("td:eq(0)").text()},function(data){
+		$("#name").val(data.name)
+		$("#phone").val(data.phone)
+        })
+    })
+
+    $("#update").click(function(){
+	personal={}
+	personal.name=$("#name").val()
+	personal.phone=$("#phone").val()
+	$.post("/changepersonal",{opersonal:personal},function(result){
+		alert(result)
+		getpersonal()
+	})
+    })
+
+    $("#delete").click(function(){
+	personal={}
+	personal.name=$("#name").val()
+	personal.phone=$("#phone").val()
+	$.post("/removepersonal",function(result){
+		alert(result)
+		getpersonal()
+        })
+    })
+   </script>
+ </body>
+</html>
